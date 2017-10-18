@@ -91,15 +91,9 @@ async def on_guild_join(guild):
 			"channel": "",
 			"message": ""
 		},
-      'staff': [
-
-      ],
-      'tags': {
-
-      },
-      'assignable': [
-
-      ],
+      'staff': [],
+      'tags': {},
+      'assignable': [],
       'prefix': ']'
     }
     m = json.dumps(book)
@@ -119,7 +113,6 @@ async def on_guild_remove(guild):
 
 @bot.event
 async def on_message(message):
-  tsuuki = '<@368973799636336651>'
   if message.content == '<@368973799636336651> prefix':
     channel = message.channel
     with open('settings.json', 'r') as f:
@@ -339,9 +332,29 @@ class Fun:
     with open('settings.json') as f:
       s = f.read()
       book = json.loads(s)
-      
+
       emb = discord.Embed(title='List of tags:', description='{}'.format(', '.join(list(book[str(ctx.guild.id)]['tags']))), color=col)
-      await ctx.send(embed=emb)  
+      await ctx.send(embed=emb)
+
+  @commands.command(help='Shows your dick size.', aliases=['ds', 'penissize'])
+  async def dicksize(self, ctx, member: discord.Member = None):
+    person = ctx.author if not member else member
+    with open('dicksizes.json', 'r') as f:
+      s = f.read()
+      book = json.loads(s)
+    if str(person.id) in book:
+      await ctx.send('{0}**\'s Dick Size:** {1} ({2} inches)'.format(person.mention, book[str(person.id)], len(book[str(person.id)]) - 1))
+    else:
+      size = random.randrange(1,21)
+      with open('dicksizes.json', 'r') as f:
+        s = f.read()
+        book = json.loads(s)
+      with open('dicksizes.json', 'w') as d:
+        book[str(person.id)] = '8{}>'.format('=' * size)
+        m = json.dumps(book)
+        d.write(m)
+      await ctx.send('{0}**\'s Dick Size:** 8{1}> ({2} inches)'.format(person.mention,'=' * size, len(book[str(person.id)]) - 1))
+
 '''-----------------------------------------------------------------------------------------------------------------'''
 class Staff:
   '''Staff / Admin commands.'''
