@@ -220,7 +220,7 @@ async def on_message(message):
       with open('apps.json', 'r') as d:
         b = d.read()
         books = json.loads(b)
-      emb = discord.Embed()
+      emb = discord.Embed(color=col)
       emb.set_author(name=str(message.author), icon_url=message.author.avatar_url)
       emb.add_field(name='Why did you join this server?', value=books[str(message.author)]['Answer 1'], inline=False)
       emb.add_field(name='Why do you want to become staff?', value=books[str(message.author)]['Answer 2'], inline=False)
@@ -714,12 +714,12 @@ class Info:
     with open('no_more_reports.json', 'r') as f:
       s = f.read()
       book = json.loads(s)
-    print(ctx.author)
-    print(book)
     if str(ctx.author) in book:
       await ctx.send('Sorry! You\'ve been banned from sending bug reports until further notice.')
     else:
-      await creator.send('Bug Report: {0}\n\nSent By: {1}#{2} ({3} | {4})'.format(' '.join(args), ctx.author.name, ctx.author.discriminator, ctx.guild.name, ctx.guild.id))
+      emb = discord.Embed(title='Bug Report', description='{0}'.format(' '.join(args)), color=col)
+      emb.set_author(name='{0} ({1} | {2})'.format(str(ctx.author), ctx.guild.name, ctx.guild.id), icon_url=ctx.author.avatar_url)
+      await creator.send(embed=emb)
       await ctx.send('Successfully sent the bug report!')
 '''-----------------------------------------------------------------------------------------------------------------'''
 class Emotes:
