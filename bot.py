@@ -14,7 +14,6 @@ async def get_pre(bot, message):
     s = f.read()
     book = json.loads(s)
   prefix = book[str(message.guild.id)]['prefix']
-  '''{}'''.format(prefix)
   return prefix
 
 bot = commands.Bot(command_prefix=get_pre)
@@ -94,7 +93,8 @@ async def on_guild_join(guild):
       'staff': [],
       'tags': {},
       'assignable': [],
-      'prefix': ']'
+      'prefix': ']',
+      'apply': False
     }
     m = json.dumps(book)
     d.write(m)
@@ -109,16 +109,133 @@ async def on_guild_remove(guild):
     del book[str(guild.id)]
     m = json.dumps(book)
     d.write(m)
-  await guild.owner.send('Sorry to see that I had to go p~p if you have any suggestions for the bot, let the creator know :point_right: **Sinon#5047**')
+  await guild.owner.send('Sorry to see that I had to go p~p if you have any suggestions for the bot, let the creator know :point_right: **_L#5047**')
 
 @bot.event
 async def on_message(message):
+  channel = message.channel
   if message.content == '<@368973799636336651> prefix':
-    channel = message.channel
     with open('settings.json', 'r') as f:
       s = f.read()
       book = json.loads(s)
     await channel.send('The prefix for this server is: `{}`'.format(book[str(message.guild.id)]['prefix']))
+  elif message.content.startswith('.apply'):
+    with open('settings.json', 'r') as f:
+      s = f.read()
+      book = json.loads(s)
+    if book[str(message.guild.id)]['apply']:
+      await channel.send('Beginning application...')
+      await message.author.send('Why did you join this server?')
+      def check(m):
+        return not m.content == 'Why did you join this server?' and m.channel == message.author.dm_channel
+      msg = await bot.wait_for('message', check=check)
+      with open('apps.json', 'r') as d:
+        b = d.read()
+        books = json.loads(b)
+      with open('apps.json', 'w') as m:
+        books[str(message.author)] = {
+          'Answer 1': msg.content,
+          'Answer 2': '',
+          'Answer 3': '',
+          'Answer 4': '',
+          'Answer 5': '',
+          'Answer 6': '',
+          'Answer 7': ''
+        }
+        n = json.dumps(books)
+        m.write(n)
+      # ------------------------------------------
+      await message.author.send('Why do you want to become staff?')
+      def check(m):
+        return not m.content == 'Why do you want to become staff?' and m.channel == message.author.dm_channel
+      msg = await bot.wait_for('message', check=check)
+      with open('apps.json', 'r') as d:
+        b = d.read()
+        books = json.loads(b)
+      with open('apps.json', 'w') as m:
+        books[str(message.author)]['Answer 2'] = msg.content
+        n = json.dumps(books)
+        m.write(n)
+      # ------------------------------------------
+      await message.author.send('From a scale of 1 to 10, how active will you be? 1 being not active at all, and 10 being extremely active.')
+      def check(m):
+        return not m.content == 'From a scale of 1 to 10, how active will you be? 1 being not active at all, and 10 being extremely active.' and m.channel == message.author.dm_channel
+      msg = await bot.wait_for('message', check=check)
+      with open('apps.json', 'r') as d:
+        b = d.read()
+        books = json.loads(b)
+      with open('apps.json', 'w') as m:
+        books[str(message.author)]['Answer 3'] = msg.content
+        n = json.dumps(books)
+        m.write(n)
+      # ------------------------------------------
+      await message.author.send('Do you have previous experience as a staff member? If so, what position? What did you do?')
+      def check(m):
+        return not m.content == 'Do you have previous experience as a staff member? If so, what position? What did you do?' and m.channel == message.author.dm_channel
+      msg = await bot.wait_for('message', check=check)
+      with open('apps.json', 'r') as d:
+        b = d.read()
+        books = json.loads(b)
+      with open('apps.json', 'w') as m:
+        books[str(message.author)]['Answer 4'] = msg.content
+        n = json.dumps(books)
+        m.write(n)
+      # ------------------------------------------
+      await message.author.send('Will you make a good effort in inviting people to the server?')
+      def check(m):
+        return not m.content == 'Will you make a good effort in inviting people to the server?' and m.channel == message.author.dm_channel
+      msg = await bot.wait_for('message', check=check)
+      with open('apps.json', 'r') as d:
+        b = d.read()
+        books = json.loads(b)
+      with open('apps.json', 'w') as m:
+        books[str(message.author)]['Answer 5'] = msg.content
+        n = json.dumps(books)
+        m.write(n)
+      # ------------------------------------------
+      await message.author.send('Will you tell the owner if you\'re going on a trip so he knows why you\'re inactive?')
+      def check(m):
+        return not m.content == 'Will you tell the owner if you\'re going on a trip so he knows why you\'re inactive?' and m.channel == message.author.dm_channel
+      msg = await bot.wait_for('message', check=check)
+      with open('apps.json', 'r') as d:
+        b = d.read()
+        books = json.loads(b)
+      with open('apps.json', 'w') as m:
+        books[str(message.author)]['Answer 6'] = msg.content
+        n = json.dumps(books)
+        m.write(n)
+      # ------------------------------------------
+      await message.author.send('Will you follow all rules in the rule list and treat everyone fairly, trying to stay as unbiased as possible for server drama?')
+      def check(m):
+        return not m.content == 'Will you follow all rules in the rule list and treat everyone fairly, trying to stay as unbiased as possible for server drama?' and m.channel == message.author.dm_channel
+      msg = await bot.wait_for('message', check=check)
+      with open('apps.json', 'r') as d:
+        b = d.read()
+        books = json.loads(b)
+      with open('apps.json', 'w') as m:
+        books[str(message.author)]['Answer 7'] = msg.content
+        n = json.dumps(books)
+        m.write(n)
+      # ------------------------------------------
+      with open('apps.json', 'r') as d:
+        b = d.read()
+        books = json.loads(b)
+      emb = discord.Embed()
+      emb.set_author(name=str(message.author), icon_url=message.author.avatar_url)
+      emb.add_field(name='Why did you join this server?', value=books[str(message.author)]['Answer 1'], inline=False)
+      emb.add_field(name='Why do you want to become staff?', value=books[str(message.author)]['Answer 2'], inline=False)
+      emb.add_field(name='From a scale of 1 to 10, how active will you be? 1 being not active at all, and 10 being extremely active.', value=books[str(message.author)]['Answer 3'], inline=False)
+      emb.add_field(name='Do you have previous experience as a staff member? If so, what position? What did you do?', value=books[str(message.author)]['Answer 4'], inline=False)
+      emb.add_field(name='Will you make a good effort in inviting people to the server?', value=books[str(message.author)]['Answer 5'], inline=False)
+      emb.add_field(name='Will you tell the owner if you\'re going on a trip so he knows why you\'re inactive?', value=books[str(message.author)]['Answer 6'], inline=False)
+      emb.add_field(name='Will you follow all rules in the rule list and treat everyone fairly, trying to stay as unbiased as possible for server drama?', value=books[str(message.author)]['Answer 7'], inline=False)
+      
+      creator = bot.get_guild(369955504983638027).owner
+      
+      await creator.send(embed=emb)
+      await message.author.dm_channel.send('Thank you.')
+    else:
+      await channel.send('Sorry! Applications are not being accepted right now.')
   else:
     await bot.process_commands(message)
 
@@ -538,9 +655,9 @@ class Info:
       s = f.read()
       book = json.loads(s)
     emb = discord.Embed(color=col)
-    emb.add_field(name='Creators', value='Sinon#5047', inline=False)
+    emb.add_field(name='Creators', value='_L#5047', inline=False)
     emb.add_field(name='Created', value='{:%A, %B %dth %Y @ %I:%M%p}'.format(bot.user.created_at), inline=False)
-    emb.add_field(name='About', value='This bot was created by **Sinon#5047** on a boring night, yeah that\'s basically it. If something isn\'t working, report it by using `{0}bug_report <the bug>`.'.format(book[str(ctx.guild.id)]['prefix']), inline=False)
+    emb.add_field(name='About', value='This bot was created by **_L#5047** on a boring night, yeah that\'s basically it. If something isn\'t working, report it by using `{0}bug_report <the bug>`.'.format(book[str(ctx.guild.id)]['prefix']), inline=False)
     emb.add_field(name='Want to add me?', value='[**Click Here**](https://discordapp.com/oauth2/authorize/?permissions=2146958591&scope=bot&client_id=368973799636336651)', inline=True)
     emb.add_field(name='Need help?', value='[**Click Here**](https://discord.gg/xAFMPHX)', inline=True)
     emb.set_thumbnail(url=bot.user.avatar_url)
