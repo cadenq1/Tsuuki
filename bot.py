@@ -740,7 +740,7 @@ class Info:
       await creator.send(embed=emb)
       await ctx.send('Successfully sent the bug report!')
 
-    @commands.command(help='Allows you to give suggestions for the bot! (If abused you will be put on a suggestion and bug report ban list until further notice)', aliases=['suggest'])
+  @commands.command(help='Allows you to give suggestions for the bot! (If abused you will be put on a suggestion and bug report ban list until further notice)', aliases=['suggest'])
   async def suggestion(self, ctx, *args):
     creator = bot.get_guild(369955504983638027).owner
     with open('no_more_reports.json', 'r') as f:
@@ -749,8 +749,10 @@ class Info:
     if str(ctx.author) in book:
       await ctx.send('Sorry! You\'ve been banned from sending suggestions until further notice.')
     else:
-      await creator.send('Suggestion: {0}\n\nSent By: {1}#{2} ({3} | {4})'.format(' '.join(args), ctx.author.name, ctx.author.discriminator, ctx.guild.name, ctx.guild.id))
-      await ctx.send('Successfully sent the bug report!')
+      emb = discord.Embed(title='Suggestion', description='{0}'.format(' '.join(args)), color=col)
+      emb.set_author(name='{0} ({1} | {2})'.format(str(ctx.author), ctx.guild.name, ctx.guild.id), icon_url=ctx.author.avatar_url)
+      await creator.send(embed=emb)
+      await ctx.send('Successfully sent the suggestion!')
 '''-----------------------------------------------------------------------------------------------------------------'''
 class Emotes:
   '''Allows you to kiss, hug, etc.'''
