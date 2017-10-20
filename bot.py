@@ -472,6 +472,25 @@ class Fun:
         d.write(m)
       await ctx.send('{0}**\'s Dick Size:** 8{1}> ({2} inches)'.format(person.mention,'=' * size, len(book[str(person.id)]) - 1))
 
+  @commands.command(help='Shows your senpai rating.', aliases=['sr', 'senpairate'])
+  async def senpai_rate(self, ctx, member: discord.Member = None):
+    person = ctx.author if not member else member
+    with open('senpairates.json', 'r') as f:
+      s = f.read()
+      book = json.loads(s)
+    if str(person.id) in book:
+      await ctx.send('I\'d give {0} a senpai rating of.. {1}/10!'.format(person.mention, book[str(person.id)]))
+    else:
+      rate = random.randrange(1,11)
+      with open('senpairates.json', 'r') as f:
+        s = f.read()
+        book = json.loads(s)
+      with open('senpairates.json', 'w') as d:
+        book[str(person.id)] = str(rate)
+        m = json.dumps(book)
+        d.write(m)
+      await ctx.send('I\'d give {0} a senpai rating of.. {1}/10!'.format(person.mention, book[str(person.id)]))
+
 '''-----------------------------------------------------------------------------------------------------------------'''
 class Staff:
   '''Staff / Admin commands.'''
@@ -707,19 +726,28 @@ class Info:
       emb.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
       await ctx.send(embed=emb)
 
-  @commands.command(help='Allows you to report a bug for the bot creator to review. (If abused you will be put on a bug report ban list until further notice)', aliases=['br', 'bugreport'])
+  @commands.command(help='Allows you to report a bug for the bot creator to review. (If abused you will be put on a suggestion and bug report ban list until further notice)', aliases=['br', 'bugreport'])
   async def bug_report(self, ctx, *args):
-    report = args
     creator = bot.get_guild(369955504983638027).owner
     with open('no_more_reports.json', 'r') as f:
       s = f.read()
       book = json.loads(s)
-    print(ctx.author)
-    print(book)
     if str(ctx.author) in book:
       await ctx.send('Sorry! You\'ve been banned from sending bug reports until further notice.')
     else:
       await creator.send('Bug Report: {0}\n\nSent By: {1}#{2} ({3} | {4})'.format(' '.join(args), ctx.author.name, ctx.author.discriminator, ctx.guild.name, ctx.guild.id))
+      await ctx.send('Successfully sent the bug report!')
+
+    @commands.command(help='Allows you to give suggestions for the bot! (If abused you will be put on a suggestion and bug report ban list until further notice)', aliases=['suggest'])
+  async def suggestion(self, ctx, *args):
+    creator = bot.get_guild(369955504983638027).owner
+    with open('no_more_reports.json', 'r') as f:
+      s = f.read()
+      book = json.loads(s)
+    if str(ctx.author) in book:
+      await ctx.send('Sorry! You\'ve been banned from sending suggestions until further notice.')
+    else:
+      await creator.send('Suggestion: {0}\n\nSent By: {1}#{2} ({3} | {4})'.format(' '.join(args), ctx.author.name, ctx.author.discriminator, ctx.guild.name, ctx.guild.id))
       await ctx.send('Successfully sent the bug report!')
 '''-----------------------------------------------------------------------------------------------------------------'''
 class Emotes:
@@ -789,8 +817,8 @@ class Roles:
     self.bot = bot
 
   @commands.command(help='Adds a role to you if the role is assignable.', aliases=['arole'])
-  async def addrole(self, ctx, *, role):
-    role = discord.utils.get(ctx.guild.roles, name=role)
+  async def addrole(self, ctx, *, roles):
+    role = discord.utils.get(ctx.guild.roles, name=roles)
     green = 0x29d82c
     red = 0xbc2e21
     with open('settings.json', 'r') as f:
@@ -805,8 +833,8 @@ class Roles:
       await ctx.send(embed=emb)
 
   @commands.command(help='Removes a role from you if the role is assignable.', aliases=['rrole'])
-  async def removerole(self, ctx, *, role):
-    role = discord.utils.get(ctx.guild.roles, name=role)
+  async def removerole(self, ctx, *, roles):
+    role = discord.utils.get(ctx.guild.roles, name=roles)
     green = 0x29d82c
     red = 0xbc2e21
     with open('settings.json', 'r') as f:
